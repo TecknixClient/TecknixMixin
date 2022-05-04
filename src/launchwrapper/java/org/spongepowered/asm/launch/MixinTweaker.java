@@ -24,28 +24,29 @@
  */
 package org.spongepowered.asm.launch;
 
+import com.tecknix.launch.api.AbstractLoader;
+import com.tecknix.launch.classloader.CustomClassLoader;
+import org.spongepowered.asm.launch.platform.CommandLineOptions;
+
 import java.io.File;
 import java.util.List;
 
-import org.spongepowered.asm.launch.platform.CommandLineOptions;
-
-import net.minecraft.launchwrapper.ITweaker;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 
 /**
  * TweakClass for running mixins in production. Being a tweaker ensures that we
  * get injected into the AppClassLoader but does mean that we will need to
  * inject the FML coremod by hand if running under FML.
  */
-public class MixinTweaker implements ITweaker {
-    
+// This will probably never get used.
+public class MixinTweaker extends AbstractLoader {
+
     /**
      * Hello world
      */
     public MixinTweaker() {
         MixinBootstrap.start();
     }
-    
+
     /* (non-Javadoc)
      * @see net.minecraft.launchwrapper.ITweaker#acceptOptions(java.util.List,
      *      java.io.File, java.io.File, java.lang.String)
@@ -55,13 +56,10 @@ public class MixinTweaker implements ITweaker {
         MixinBootstrap.doInit(CommandLineOptions.ofArgs(args));
     }
 
-    /* (non-Javadoc)
-     * @see net.minecraft.launchwrapper.ITweaker#injectIntoClassLoader(
-     *      net.minecraft.launchwrapper.LaunchClassLoader)
-     */
     @Override
-    public final void injectIntoClassLoader(LaunchClassLoader classLoader) {
+    public void injectIntoClassLoader(CustomClassLoader customClassLoader) {
         MixinBootstrap.inject();
+
     }
 
     /* (non-Javadoc)

@@ -1,5 +1,9 @@
 
-### [![Build Status](http://ci.liteloader.com/view/Other/job/Mixin/badge/icon)](http://ci.liteloader.com/view/Other/job/Mixin/lastSuccessfulBuild/)
+#**Tecknix Client Mixin Fork**
+
+This fork is to add compatibility for the Tecknix Client modding API (TML-API) to the SpongePowered trait/mixin framework.
+
+Continue original readme:
 
 ![Mixin Logo](docs/javadoc/resources/logo.png?raw=true)
 

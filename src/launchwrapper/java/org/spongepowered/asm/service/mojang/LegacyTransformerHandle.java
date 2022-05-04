@@ -24,16 +24,15 @@
  */
 package org.spongepowered.asm.service.mojang;
 
-import java.lang.annotation.Annotation;
-
+import com.tecknix.launch.api.AbstractClassTransformer;
 import org.spongepowered.asm.service.IClassProvider;
 import org.spongepowered.asm.service.ILegacyClassTransformer;
 import org.spongepowered.asm.service.MixinService;
 
-import net.minecraft.launchwrapper.IClassTransformer;
+import java.lang.annotation.Annotation;
 
 /**
- * A handle for a legacy {@link IClassTransformer} for processing as a legacy
+ * A handle for a legacy {@link AbstractClassTransformer} for processing as a legacy
  * transformer
  */
 class LegacyTransformerHandle implements ILegacyClassTransformer {
@@ -41,9 +40,9 @@ class LegacyTransformerHandle implements ILegacyClassTransformer {
     /**
      * Wrapped transformer
      */
-    private final IClassTransformer transformer;
+    private final AbstractClassTransformer transformer;
     
-    LegacyTransformerHandle(IClassTransformer transformer) {
+    LegacyTransformerHandle(AbstractClassTransformer transformer) {
         this.transformer = transformer;
     }
     

@@ -24,10 +24,9 @@
  */
 package org.spongepowered.asm.service.mojang;
 
+import com.tecknix.launch.TecknixMain;
 import org.spongepowered.asm.service.IMixinServiceBootstrap;
 import org.spongepowered.asm.service.ServiceInitialisationException;
-
-import net.minecraft.launchwrapper.Launch;
 
 /**
  * Bootstrap for LaunchWrapper service
@@ -35,7 +34,7 @@ import net.minecraft.launchwrapper.Launch;
 public class MixinServiceLaunchWrapperBootstrap implements IMixinServiceBootstrap {
 
     private static final String SERVICE_PACKAGE = "org.spongepowered.asm.service.";
-    private static final String LAUNCH_PACKAGE = "org.spongepowered.asm.launch.";
+    private static final String LAUNCH_PACKAGE = "org.spongepowered.asm.TecknixMain.";
     private static final String LOGGING_PACKAGE = "org.spongepowered.asm.logging.";
     
     private static final String MIXIN_UTIL_PACKAGE = "org.spongepowered.asm.util.";
@@ -56,21 +55,21 @@ public class MixinServiceLaunchWrapperBootstrap implements IMixinServiceBootstra
     @Override
     public void bootstrap() {
         try {
-            Launch.classLoader.hashCode();
+            TecknixMain.classLoader.hashCode();
         } catch (Throwable th) {
             throw new ServiceInitialisationException(this.getName() + " is not available");
         }
-        
+
         // Essential ones
-        Launch.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.SERVICE_PACKAGE);
-        Launch.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.LAUNCH_PACKAGE);
-        Launch.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.LOGGING_PACKAGE);
+        TecknixMain.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.SERVICE_PACKAGE);
+        TecknixMain.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.LAUNCH_PACKAGE);
+        TecknixMain.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.LOGGING_PACKAGE);
 
         // Important ones
-        Launch.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.ASM_PACKAGE);
-        Launch.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.LEGACY_ASM_PACKAGE);
-        Launch.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.MIXIN_PACKAGE);
-        Launch.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.MIXIN_UTIL_PACKAGE);
+        TecknixMain.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.ASM_PACKAGE);
+        TecknixMain.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.LEGACY_ASM_PACKAGE);
+        TecknixMain.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.MIXIN_PACKAGE);
+        TecknixMain.classLoader.addClassLoaderExclusion(MixinServiceLaunchWrapperBootstrap.MIXIN_UTIL_PACKAGE);
     }
 
 }

@@ -6,10 +6,10 @@ buildscript {
     dependencies {
         classpath 'gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin:0.16.1'
         classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
+
     }
 }
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 // Apply plugin
 apply plugin: 'java'
@@ -75,9 +75,6 @@ configurations {
     fernflowerImplementation    .extendsFrom implementation
     launchwrapperImplementation .extendsFrom implementation
     agentImplementation         .extendsFrom implementation
-    modlauncherImplementation   .extendsFrom implementation
-    modlauncher9Implementation  .extendsFrom modlauncherImplementation
-    modularityImplementation    .extendsFrom modlauncher9Implementation
     modularityCompileOnly       .extendsFrom compileOnly
 }
 
@@ -86,11 +83,11 @@ sourceSets {
         ext.languageVersion = 8
         ext.compatibility = '1.6'
     }
-    main {
+    main({
         compileClasspath += legacy.output
         ext.languageVersion = 8
         ext.compatibility = '1.6'
-    }
+    })
     ap {
         compileClasspath += main.output
         ext.languageVersion = 8
@@ -126,22 +123,7 @@ sourceSets {
         ext.languageVersion = 8
         ext.compatibility = '1.8'
     }
-    modlauncher {
-        compileClasspath += main.output
-        ext.languageVersion = 8
-        ext.compatibility = '1.8'
-    }
-    modlauncher4 {
-        compileClasspath += main.output
-        compileClasspath += modlauncher.output
-        ext.languageVersion = 8
-        ext.compatibility = '1.8'
-    }
-    modlauncher9 {
-        ext.languageVersion = 16
-        compileClasspath += main.output
-        compileClasspath += modlauncher.output
-    }
+
     modularity {
         ext.languageVersion = 16
         ext.modularityExcluded = true // don't add ourselves
@@ -159,6 +141,8 @@ potemkinModules {
 
 // Project dependencies
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'lib');
+
     def guava = 'com.google.guava:guava:21.0' // from mc1.12 onwards
     
     implementation guava
@@ -173,47 +157,56 @@ dependencies {
     // Annotation Processor
     apImplementation "org.ow2.asm:asm-tree:$asmVersion"
     apImplementation guava
-    
+
     // Fernflower decompiler
     fernflowerImplementation 'org.jetbrains.java.decompiler:fernflower:sponge-SNAPSHOT'
 
-    // LegacyLauncher service
-    launchwrapperImplementation ('net.minecraft:launchwrapper:1.11') {
-        exclude module: 'lwjgl'
-        exclude module: 'asm-debug-all'
-        exclude module: 'jopt-simple'
-    }
-    
-    modlauncherImplementation 'net.sf.jopt-simple:jopt-simple:5.0.4'
-    modlauncherCompileOnly 'org.apache.logging.log4j:log4j-core:2.0-beta9'
-    modlauncherImplementation ("cpw.mods:modlauncher:$legacyModlauncherVersion") {
-        exclude module: 'asm'
-        exclude module: 'asm-analysis'
-        exclude module: 'asm-commons'
-        exclude module: 'asm-tree'
-        exclude module: 'jopt-simple'
-    }
-    
-    modlauncher4Implementation ("cpw.mods:modlauncher:$legacyModlauncherVersion") {
-        exclude module: 'asm'
-        exclude module: 'asm-analysis'
-        exclude module: 'asm-commons'
-        exclude module: 'asm-tree'
-        exclude module: 'jopt-simple'
-    }
-    
-    modlauncher9Implementation ("cpw.mods:modlauncher:$modlauncherVersion") {
-        exclude module: 'jopt-simple'
-    }
-    modlauncher9Implementation 'cpw.mods:securejarhandler:0.9.+'
-    
+    /**
+     @note Removed for Tecknix Compatibility.
+     */
+//    // LegacyLauncher service
+//    launchwrapperImplementation ('net.minecraft:launchwrapper:1.11') {
+//        exclude module: 'lwjgl'
+//        exclude module: 'asm-debug-all'
+//        exclude module: 'jopt-simple'
+//    }
+//
+
+
+    /**
+     @note Removed for Tecknix Compatibility.
+
+     */
+
+
+//    modlauncherImplementation("cpw.mods:modlauncher:$legacyModlauncherVersion") {
+//        exclude module: 'asm'
+//        exclude module: 'asm-analysis'
+//        exclude module: 'asm-commons'
+//        exclude module: 'asm-tree'
+//        exclude module: 'jopt-simple'
+//    }
+//
+//    modlauncher4Implementation ("cpw.mods:modlauncher:$legacyModlauncherVersion") {
+//        exclude module: 'asm'
+//        exclude module: 'asm-analysis'
+//        exclude module: 'asm-commons'
+//        exclude module: 'asm-tree'
+//        exclude module: 'jopt-simple'
+//    }
+//
+//    modlauncher9Implementation ("cpw.mods:modlauncher:$modlauncherVersion") {
+//        exclude module: 'jopt-simple'
+//    }
+//    modlauncher9Implementation 'cpw.mods:securejarhandler:0.9.+'
+
     // asm bridge
-    bridgeImplementation 'org.apache.logging.log4j:log4j-core:2.0-beta9'
+    bridgeImplementation 'org.apache.logging.log4j:log4j-core:2.17.2'
     bridgeImplementation "org.ow2.asm:asm-commons:$legacyForgeAsmVersion"
-    
+
     legacyImplementation "org.ow2.asm:asm-tree:$asmVersion"
-    
-    modularityCompileOnly 'org.apache.logging.log4j:log4j-core:2.11.2'
+
+    modularityCompileOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
 }
 
 javadoc {
@@ -264,7 +257,7 @@ eclipse {
     }
     
     // Build service task outputs for test projects
-    autoBuildTasks compileModlauncher4Java, compileModlauncher9Java, compileLaunchwrapperJava
+    autoBuildTasks  compileLaunchwrapperJava
 }
 
 // Filter, process, and include resources
@@ -345,33 +338,33 @@ if (JavaVersion.current().isJava8Compatible()) {
         options.addStringOption('Xdoclint:syntax', '-quiet')
     }
 }
-
-task stagingJar(type: ShadowJar) {
-    sourceSets.findAll { !(it.name =~ /example|test/) }.each {
-        from it.output
-    }
-    configurations = [project.configurations.stagingJar]
-    
-    // JAR manifest configuration
-    manifest.attributes(
-        "Built-By": System.properties['user.name'],
-        "Created-By": System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
-        "Implementation-Title": name,
-        "Implementation-Version": project.version + "+" + ciSystem + "-b" + buildNumber + ".git-" + commit,
-        "Implementation-Vendor": url,
-        // for hotswap agent
-        "Premain-Class": "org.spongepowered.tools.agent.MixinAgent",
-        "Agent-Class": "org.spongepowered.tools.agent.MixinAgent",
-        "Can-Redefine-Classes": true,
-        "Can-Retransform-Classes": true
-    )
-
-    if (project.doSignJar) {
-        classifier = 'unsigned'
-    }
-    
-    mergeServiceFiles()
-}
+//TODO fix this.
+//task stagingJar(type: ShadowJar) {
+//    sourceSets.findAll { !(it.name =~ /example|test/) }.each {
+//        from it.output
+//    }
+//    configurations = [project.configurations.stagingJar]
+//
+//    // JAR manifest configuration
+//    manifest.attributes(
+//        "Built-By": System.properties['user.name'],
+//        "Created-By": System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
+//        "Implementation-Title": name,
+//        "Implementation-Version": project.version + "+" + ciSystem + "-b" + buildNumber + ".git-" + commit,
+//        "Implementation-Vendor": url,
+//        // for hotswap agent
+//        "Premain-Class": "org.spongepowered.tools.agent.MixinAgent",
+//        "Agent-Class": "org.spongepowered.tools.agent.MixinAgent",
+//        "Can-Redefine-Classes": true,
+//        "Can-Retransform-Classes": true
+//    )
+//
+//    if (project.doSignJar) {
+//        classifier = 'unsigned'
+//    }
+//
+//    mergeServiceFiles()
+//}
 
 // Clear artifacts because jar will be there by default and we want to use staging jar instead
 configurations.archives.artifacts.clear()
@@ -434,7 +427,7 @@ artifacts {
     if (project.doSignJar) {
         archives signJar.outputs.files[0]
     } else {
-        archives stagingJar
+//        archives stagingJar //TODO fix
     }
     archives sourceJar
     archives javadocJar
@@ -478,11 +471,11 @@ publishing {
             if (project.doSignJar) {
                 artifact signJar.outputs.files[0]
             } else {
-                artifact stagingJar
+//                artifact stagingJar
             }
             artifact sourceJar
             artifact javadocJar
-            artifact shadowJar
+//            artifact shadowJar
         }
     }
     

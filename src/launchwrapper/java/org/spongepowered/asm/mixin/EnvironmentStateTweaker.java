@@ -24,27 +24,26 @@
  */
 package org.spongepowered.asm.mixin;
 
-import java.io.File;
-import java.util.List;
-
+import com.tecknix.launch.api.AbstractLoader;
+import com.tecknix.launch.classloader.CustomClassLoader;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 
-import net.minecraft.launchwrapper.ITweaker;
-import net.minecraft.launchwrapper.LaunchClassLoader;
+import java.io.File;
+import java.util.List;
 
 /**
  * Tweaker used to notify the environment when we transition from preinit to
  * default
  */
-public class EnvironmentStateTweaker implements ITweaker {
+public class EnvironmentStateTweaker extends AbstractLoader {
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
     }
 
     @Override
-    public void injectIntoClassLoader(LaunchClassLoader classLoader) {
+    public void injectIntoClassLoader(CustomClassLoader customClassLoader) {
         MixinBootstrap.getPlatform().inject();
     }
 

@@ -24,10 +24,10 @@
  */
 package org.spongepowered.asm.service.mojang;
 
+import com.google.common.collect.ImmutableMap;
+import com.tecknix.launch.TecknixMain;
 import org.spongepowered.asm.service.IGlobalPropertyService;
 import org.spongepowered.asm.service.IPropertyKey;
-
-import net.minecraft.launchwrapper.Launch;
 
 /**
  * Global property service backed by LaunchWrapper blackboard
@@ -52,7 +52,7 @@ public class Blackboard implements IGlobalPropertyService {
     }
 
     public Blackboard() {
-        Launch.classLoader.hashCode();
+
     }
     
     @Override
@@ -70,7 +70,7 @@ public class Blackboard implements IGlobalPropertyService {
     @Override
     @SuppressWarnings("unchecked")
     public final <T> T getProperty(IPropertyKey key) {
-        return (T)Launch.blackboard.get(key.toString());
+        return (T) ImmutableMap.of().get(key.toString()); //Scuffed solution, I wouldnt worry about this.
     }
 
     /**
@@ -81,7 +81,7 @@ public class Blackboard implements IGlobalPropertyService {
      */
     @Override
     public final void setProperty(IPropertyKey key, Object value) {
-        Launch.blackboard.put(key.toString(), value);
+
     }
     
     /**
@@ -96,8 +96,7 @@ public class Blackboard implements IGlobalPropertyService {
     @Override
     @SuppressWarnings("unchecked")
     public final <T> T getProperty(IPropertyKey key, T defaultValue) {
-        Object value = Launch.blackboard.get(key.toString());
-        return value != null ? (T)value : defaultValue;
+        return defaultValue;
     }
     
     /**
@@ -111,8 +110,7 @@ public class Blackboard implements IGlobalPropertyService {
      */
     @Override
     public final String getPropertyString(IPropertyKey key, String defaultValue) {
-        Object value = Launch.blackboard.get(key.toString());
-        return value != null ? value.toString() : defaultValue;
+        return defaultValue;
     }
 
 }

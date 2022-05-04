@@ -24,13 +24,12 @@
  */
 package org.spongepowered.asm.mixin.transformer;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.tecknix.launch.api.AbstractClassTransformer;
 import org.spongepowered.asm.service.ILegacyClassTransformer;
 import org.spongepowered.asm.service.MixinService;
 
-import net.minecraft.launchwrapper.IClassTransformer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Proxy transformer for the mixin transformer. These transformers are used
@@ -39,13 +38,13 @@ import net.minecraft.launchwrapper.IClassTransformer;
  * the mixin transformer itself. Only the latest proxy to be instantiated
  * will actually provide callbacks to the underlying mixin transformer.
  */
-public final class Proxy implements IClassTransformer, ILegacyClassTransformer {
-    
+public final class Proxy extends AbstractClassTransformer implements ILegacyClassTransformer {
+
     /**
      * All existing proxies
      */
     private static List<Proxy> proxies = new ArrayList<Proxy>();
-    
+
     /**
      * Actual mixin transformer instance
      */

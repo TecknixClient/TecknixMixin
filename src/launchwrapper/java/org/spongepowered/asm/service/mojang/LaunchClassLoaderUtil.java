@@ -24,17 +24,16 @@
  */
 package org.spongepowered.asm.service.mojang;
 
+import com.tecknix.launch.classloader.CustomClassLoader;
+import org.spongepowered.asm.service.IClassTracker;
+
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.spongepowered.asm.service.IClassTracker;
-
-import net.minecraft.launchwrapper.LaunchClassLoader;
-
 /**
- * Utility class for reflecting into {@link LaunchClassLoader}. We <b>do not
+ * Utility class for reflecting into {@link CustomClassLoader}. We <b>do not
  * write</b> anything of the classloader fields, but we need to be able to read
  * them to perform some validation tasks, and insert entries for mixin "classes"
  * into the invalid classes set.
@@ -45,11 +44,11 @@ final class LaunchClassLoaderUtil implements IClassTracker {
     private static final String INVALID_CLASSES_FIELD = "invalidClasses";
     private static final String CLASS_LOADER_EXCEPTIONS_FIELD = "classLoaderExceptions";
     private static final String TRANSFORMER_EXCEPTIONS_FIELD = "transformerExceptions";
-    
+
     /**
      * ClassLoader for this util
      */
-    private final LaunchClassLoader classLoader;
+    private final CustomClassLoader classLoader;
     
     // Reflected fields
     private final Map<String, Class<?>> cachedClasses;
@@ -59,10 +58,10 @@ final class LaunchClassLoaderUtil implements IClassTracker {
 
     /**
      * Singleton, use factory to get an instance
-     * 
+     *
      * @param classLoader class loader
      */
-    LaunchClassLoaderUtil(LaunchClassLoader classLoader) {
+    LaunchClassLoaderUtil(CustomClassLoader classLoader) {
         this.classLoader = classLoader;
         this.cachedClasses = LaunchClassLoaderUtil.<Map<String, Class<?>>>getField(classLoader, LaunchClassLoaderUtil.CACHED_CLASSES_FIELD);
         this.invalidClasses = LaunchClassLoaderUtil.<Set<String>>getField(classLoader, LaunchClassLoaderUtil.INVALID_CLASSES_FIELD);
@@ -73,10 +72,10 @@ final class LaunchClassLoaderUtil implements IClassTracker {
     /**
      * Get the classloader
      */
-    LaunchClassLoader getClassLoader() {
+    CustomClassLoader getClassLoader() {
         return this.classLoader;
     }
-    
+
     /**
      * Get whether a class name exists in the cache (indicating it was loaded
      * via the inner loader
@@ -190,11 +189,11 @@ final class LaunchClassLoaderUtil implements IClassTracker {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getField(LaunchClassLoader classLoader, String fieldName) {
+    private static <T> T getField(CustomClassLoader classLoader, String fieldName) {
         try {
-            Field field = LaunchClassLoader.class.getDeclaredField(fieldName);
+            Field field = CustomClassLoader.class.getDeclaredField(fieldName);
             field.setAccessible(true);
-            return (T)field.get(classLoader);
+            return (T) field.get(classLoader);
         } catch (Exception ex) {
 //            ex.printStackTrace();
         }
