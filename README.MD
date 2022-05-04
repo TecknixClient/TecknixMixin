@@ -1,5 +1,5 @@
 
-#**Tecknix Client Mixin Fork**
+**Tecknix Client Mixin Fork**
 
 This fork is to add compatibility for the Tecknix Client modding API (TML-API) to the SpongePowered trait/mixin framework.
 
